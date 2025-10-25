@@ -1,11 +1,12 @@
-#!/usr/bin/env python3
 import sys
+import time
 
 from glfw.GLFW import *
-
 from OpenGL.GL import *
 from OpenGL.GLU import *
+import random
 
+random.seed(time.time())
 
 def startup():
     update_viewport(None, 400, 400)
@@ -16,22 +17,27 @@ def shutdown():
     pass
 
 
+def rectangle(x: float, y: float, a: float, b: float, d=0.0):
+    r1, g1, b1 = random.random(), random.random(), random.random()
+    glColor3f(r1, g1, b1)
+    glBegin(GL_TRIANGLES)
+    glVertex2f((x - (d * a) / 2), (y + (d * b) / 2))
+    glVertex2f((x + (d * a) / 2), (y + (d * b) / 2))
+    glVertex2f((x + (d * a) / 2), (y - (d * b) / 2))
+    glEnd()
+
+    glColor3f(r1, g1, b1)
+    glBegin(GL_TRIANGLES)
+    glVertex2f((x - (d * a) / 2), (y + (d * b) / 2))
+    glVertex2f((x - (d * a) / 2), (y - (d * b) / 2))
+    glVertex2f((x + (d * a) / 2), (y - (d * b) / 2))
+    glEnd()
+
+
 def render(time):
     glClear(GL_COLOR_BUFFER_BIT)
 
-    glColor3f(0.0, 1.0, 0.0)
-    glBegin(GL_TRIANGLES)
-    glVertex2f(0.0, 0.0)
-    glVertex2f(0.0, 50.0)
-    glVertex2f(50.0, 0.0)
-    glEnd()
-
-    glColor3f(1.0, 0.0, 0.0)
-    glBegin(GL_TRIANGLES)
-    glVertex2f(0.0, 0.0)
-    glVertex2f(0.0, 50.0)
-    glVertex2f(-50.0, 0.0)
-    glEnd()
+    rectangle(0.0, 0.0, 100.0, 50.0, 0.5)
 
     glFlush()
 
@@ -48,11 +54,9 @@ def update_viewport(window, width, height):
     glLoadIdentity()
 
     if width <= height:
-        glOrtho(-100.0, 100.0, -100.0 / aspect_ratio, 100.0 / aspect_ratio,
-                1.0, -1.0)
+        glOrtho(-100.0, 100.0, -100.0 / aspect_ratio, 100.0 / aspect_ratio, 1.0, -1.0)
     else:
-        glOrtho(-100.0 * aspect_ratio, 100.0 * aspect_ratio, -100.0, 100.0,
-                1.0, -1.0)
+        glOrtho(-100.0 * aspect_ratio, 100.0 * aspect_ratio, -100.0, 100.0, 1.0, -1.0)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
@@ -63,6 +67,7 @@ def main():
         sys.exit(-1)
 
     window = glfwCreateWindow(400, 400, __file__, None, None)
+
     if not window:
         glfwTerminate()
         sys.exit(-1)
