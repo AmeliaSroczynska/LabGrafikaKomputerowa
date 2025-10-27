@@ -1,10 +1,13 @@
 import sys
+import time
 
 from glfw.GLFW import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
+import random
 
-# Ustawienia początkowe okna
+random.seed(time.time())
+
 def startup():
     update_viewport(None, 400, 400)
     glClearColor(0.5, 0.5, 0.5, 1.0)
@@ -14,21 +17,27 @@ def shutdown():
     pass
 
 
-def render(time):
-    glClear(GL_COLOR_BUFFER_BIT)        # Czyści przygotowując ekran do rysowania
-
-    # Vertex - współrzędne wierzchołka
-    # Color - kolor wierzchołka
+def rectangle(x: float, y: float, a: float, b: float, d=0.0):
+    glColor3f(random.random(), random.random(), random.random())
     glBegin(GL_TRIANGLES)
-    glVertex2f(-50.0, 0.0)                     # Pierwszy wierzchołek - niebieski
-    glColor3f(0.0, 0.0, 1.0)
-    glVertex2f(0.0, 50.0)                   # Drugi wierzchołek - zielony
-    glColor3f(0.0, 1.0, 0.0)
-    glVertex2f(50.0, 0.0)                   # Trzeci wierzchołek - czerwony
-    glColor3f(1.0, 0.0, 0.0)
+    glVertex2f((x - (d * a) / 2), (y + (d * b) / 2))
+    glVertex2f((x + (d * a) / 2), (y + (d * b) / 2))
+    glVertex2f((x + (d * a) / 2), (y - (d * b) / 2))
     glEnd()
 
-    glFlush()                          # Wymuszenie wykonania poleceń OpenGL
+    glBegin(GL_TRIANGLES)
+    glVertex2f((x - (d * a) / 2), (y + (d * b) / 2))
+    glVertex2f((x - (d * a) / 2), (y - (d * b) / 2))
+    glVertex2f((x + (d * a) / 2), (y - (d * b) / 2))
+    glEnd()
+
+
+def render(time):
+    glClear(GL_COLOR_BUFFER_BIT)
+
+    rectangle(0.0, 0.0, 100.0, 50.0, 0.5)
+
+    glFlush()
 
 
 def update_viewport(window, width, height):
@@ -52,13 +61,11 @@ def update_viewport(window, width, height):
 
 
 def main():
-    # Zakończenie programu z kodem błędu, jeśli GLFW nie zainicjalizowało się poprawnie.
     if not glfwInit():
         sys.exit(-1)
 
-    # Utworzenie okna o rozmiarze 400x400 pikseli
     window = glfwCreateWindow(400, 400, __file__, None, None)
-    # Jeśli okno nie zostało utworzone, zakończenie programu
+
     if not window:
         glfwTerminate()
         sys.exit(-1)

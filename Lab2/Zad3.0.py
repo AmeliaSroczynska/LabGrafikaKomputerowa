@@ -1,13 +1,11 @@
 import sys
-import time
 
 from glfw.GLFW import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-import random
 
-random.seed(time.time())
 
+# Ustawienia początkowe okna
 def startup():
     update_viewport(None, 400, 400)
     glClearColor(0.5, 0.5, 0.5, 1.0)
@@ -17,27 +15,22 @@ def shutdown():
     pass
 
 
-def rectangle(x: float, y: float, a: float, b: float, d=0.0):
-    r1, g1, b1 = random.random(), random.random(), random.random()
-    glColor3f(r1, g1, b1)
-    glBegin(GL_TRIANGLES)
-    glVertex2f((x - (d * a) / 2), (y + (d * b) / 2))
-    glVertex2f((x + (d * a) / 2), (y + (d * b) / 2))
-    glVertex2f((x + (d * a) / 2), (y - (d * b) / 2))
-    glEnd()
-
-    glColor3f(r1, g1, b1)
-    glBegin(GL_TRIANGLES)
-    glVertex2f((x - (d * a) / 2), (y + (d * b) / 2))
-    glVertex2f((x - (d * a) / 2), (y - (d * b) / 2))
-    glVertex2f((x + (d * a) / 2), (y - (d * b) / 2))
-    glEnd()
-
-
 def render(time):
-    glClear(GL_COLOR_BUFFER_BIT)
+    glClear(GL_COLOR_BUFFER_BIT)        # Przygotowanie ekranu do rysowania
 
-    rectangle(0.0, 0.0, 100.0, 50.0, 0.5)
+    # Vertex - współrzędne wierzchołka
+    # Color - kolor wierzchołka
+    glBegin(GL_TRIANGLES)
+    glColor3f(1.0, 0.0, 0.0)    # Pierwszy wierzchołek - czerwony lewy dolny
+    glVertex2f(-50.0, 0.0)
+
+    glColor3f(0.0, 0.0, 1.0)    # Drugi wierzchołek - niebieski górny
+    glVertex2f(0.0, 50.0)
+
+    glColor3f(0.0, 1.0, 0.0)    # Trzeci wierzchołek - zielony prawy dolny
+    glVertex2f(50.0, 0.0)
+
+    glEnd()
 
     glFlush()
 
@@ -63,11 +56,13 @@ def update_viewport(window, width, height):
 
 
 def main():
+    # Zakończenie programu z kodem błędu, jeśli GLFW nie zainicjalizowało się poprawnie.
     if not glfwInit():
         sys.exit(-1)
 
+    # Utworzenie okna o rozmiarze 400x400 pikseli
     window = glfwCreateWindow(400, 400, __file__, None, None)
-
+    # Jeśli okno nie zostało utworzone, zakończenie programu
     if not window:
         glfwTerminate()
         sys.exit(-1)
