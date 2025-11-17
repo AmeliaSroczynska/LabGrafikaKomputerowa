@@ -1,15 +1,20 @@
 import sys
 
+import numpy
 from glfw.GLFW import *
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+N = 25
+tab = numpy.zeros((N, N, 3))
+colors = numpy.zeros((N, N, 3))
 
 def startup():
-    update_viewport(None, 400, 400)
+    update_viewport(None, 400, 600)
     glClearColor(0.0, 0.0, 0.0, 1.0)
     glEnable(GL_DEPTH_TEST)
+    generate_colors()
 
 
 def shutdown():
@@ -34,12 +39,65 @@ def axes():
     glEnd()
 
 
+def egg():
+    global tab
+
+    u = numpy.linspace(0.0, 1.0, N)
+    v = numpy.linspace(0.0, 1.0, N)
+
+    for i in range(N):
+        for j in range(N):
+            uu = u[i]
+            vv = v[j]
+            # parametryczna definicja jajka
+            x = ((-90 * uu**5 + 225 * uu**4 - 270 * uu**3 + 180 * uu**2 - 45 * uu) * numpy.cos(numpy.pi * vv))
+            y = 160 * uu**4 - 320 * uu**3 + 160 * uu**2 - 5
+            z = ((-90 * uu**5 + 225 * uu**4 - 270 * uu**3 + 180 * uu**2 - 45 * uu) * numpy.sin(numpy.pi * vv))
+            tab[i][j] = [x, y, z]
+
+def generate_colors():
+    global colors
+    for i in range(N):
+        for j in range(N):
+            colors[i][j] = numpy.random.rand(3)
+
+def spin(angle):
+    glRotatef(angle, 0.0, 1.0, 0.0)
+
+
 def render(time):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
-    axes()
+    angle = time * 180 / numpy.pi
+    spin(angle)
 
+    axes()
+    egg()
+
+    glBegin(GL_TRIANGLES)
+
+    for i in range(N - 1):
+        for j in range(N - 1):
+            glColor3fv(colors[i][j])
+            glVertex3fv(tab[i][j])
+
+            glColor3fv(colors[i + 1][j])
+            glVertex3fv(tab[i + 1][j])
+
+            glColor3fv(colors[i][j + 1])
+            glVertex3fv(tab[i][j + 1])
+
+            glColor3fv(colors[i + 1][j])
+            glVertex3fv(tab[i + 1][j])
+
+            glColor3fv(colors[i + 1][j + 1])
+            glVertex3fv(tab[i + 1][j + 1])
+
+            glColor3fv(colors[i][j + 1])
+            glVertex3fv(tab[i][j + 1])
+
+    glEnd()
     glFlush()
 
 
@@ -67,7 +125,7 @@ def main():
     if not glfwInit():
         sys.exit(-1)
 
-    window = glfwCreateWindow(400, 400, __file__, None, None)
+    window = glfwCreateWindow(400, 600, __file__, None, None)
     if not window:
         glfwTerminate()
         sys.exit(-1)
