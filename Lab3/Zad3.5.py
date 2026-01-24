@@ -9,6 +9,7 @@ from OpenGL.GLU import *
 N = 25
 tab = numpy.zeros((N, N, 3))
 
+
 def startup():
     update_viewport(None, 400, 600)
     glClearColor(0.0, 0.0, 0.0, 1.0)
@@ -54,15 +55,16 @@ def egg():
 
 
 def spin(angle):
+    glRotatef(angle, 1.0, 0.0, 0.0)
     glRotatef(angle, 0.0, 1.0, 0.0)
+    glRotatef(angle, 0.0, 0.0, 1.0)
 
 
 def render(time):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
-    angle = time * 180 / numpy.pi
-    spin(angle)
+    spin(time * 180 / 3.1415)
 
     axes()
     egg()

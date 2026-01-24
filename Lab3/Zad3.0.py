@@ -9,6 +9,7 @@ from OpenGL.GLU import *
 N = 100
 tab = numpy.zeros((N, N, 3))
 
+
 def startup():
     update_viewport(None, 400, 600)
     glClearColor(0.0, 0.0, 0.0, 1.0)

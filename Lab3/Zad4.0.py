@@ -10,6 +10,7 @@ N = 25
 tab = numpy.zeros((N, N, 3))
 colors = numpy.zeros((N, N, 3))
 
+
 def startup():
     update_viewport(None, 400, 600)
     glClearColor(0.0, 0.0, 0.0, 1.0)
@@ -49,11 +50,11 @@ def egg():
         for j in range(N):
             uu = u[i]
             vv = v[j]
-            # parametryczna definicja jajka
             x = ((-90 * uu**5 + 225 * uu**4 - 270 * uu**3 + 180 * uu**2 - 45 * uu) * numpy.cos(numpy.pi * vv))
             y = 160 * uu**4 - 320 * uu**3 + 160 * uu**2 - 5
             z = ((-90 * uu**5 + 225 * uu**4 - 270 * uu**3 + 180 * uu**2 - 45 * uu) * numpy.sin(numpy.pi * vv))
             tab[i][j] = [x, y, z]
+
 
 def generate_colors():
     global colors
@@ -61,16 +62,18 @@ def generate_colors():
         for j in range(N):
             colors[i][j] = numpy.random.rand(3)
 
+
 def spin(angle):
+    glRotatef(angle, 1.0, 0.0, 0.0)
     glRotatef(angle, 0.0, 1.0, 0.0)
+    glRotatef(angle, 0.0, 0.0, 1.0)
 
 
 def render(time):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
-    angle = time * 180 / numpy.pi
-    spin(angle)
+    spin(time * 180 / 3.1415)
 
     axes()
     egg()
